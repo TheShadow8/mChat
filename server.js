@@ -2,8 +2,9 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { ApolloServer } from 'apollo-server-express';
 
-import typeDefs from './schema';
-import resolvers from './resolvers';
+import path from 'path';
+import { fileLoader, mergeTypes, mergeResolvers } from 'merge-graphql-schemas';
+import models from './models';
 
 const app = express();
 
@@ -11,9 +12,13 @@ const app = express();
 app.use(bodyParser.json());
 
 //  Apollo Server GraphQL
+const typeDefs = mergeTypes(fileLoader(path.join(__dirname, './schemas')));
+const resolvers = mergeResolvers(fileLoader(path.join(__dirname, './resolvers')));
+
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
+  context: { models },
 });
 
 server.applyMiddleware({ app });
@@ -21,4 +26,6 @@ server.applyMiddleware({ app });
 // Server listen
 const port = process.env.PORT || 8088;
 
-app.listen(port, () => console.log(`🚀 Server ready at http://localhost:${port}${server.graphqlPath}`));
+models.sequelize.sync({}).then(() => {
+  app.listen(port, () => console.log(`🚀 Server ready at http://localhost:${port}${server.graphqlPath}`));
+});
