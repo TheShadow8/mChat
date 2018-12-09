@@ -1,0 +1,31 @@
+{
+  "name": "mchat",
+  "version": "1.0.0",
+  "description": "Use NodeJs, Express, GraphQL, PostgreSQL and React to build messaging app for businesses",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon --exec babel-node server.js"
+  },
+  "author": "Minh Do",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server-express": "^2.2.6",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "graphql": "^14.0.2",
+    "graphql-tools": "^4.0.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-3": "^6.24.1",
+    "eslint": "5.3.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^3.3.0",
+    "eslint-plugin-import": "2.14.0",
+    "eslint-plugin-jsx-a11y": "6.1.1",
+    "eslint-plugin-prettier": "^3.0.0",
+    "eslint-plugin-react": "7.11.0",
+    "prettier": "^1.15.3"
+  }
+}
