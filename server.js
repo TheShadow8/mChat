@@ -1,5 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import { ApolloServer } from 'apollo-server-express';
 
 import path from 'path';
@@ -7,6 +8,9 @@ import { fileLoader, mergeTypes, mergeResolvers } from 'merge-graphql-schemas';
 import models from './models';
 
 const app = express();
+
+// User CORS
+app.use(cors());
 
 // Use body parser
 app.use(bodyParser.json());
