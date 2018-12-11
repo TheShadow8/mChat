@@ -1,13 +1,21 @@
+import formatError from '../utils/formatErrors';
+import { requireAuth } from '../configs/authentication';
+
 export default {
   Mutation: {
-    createTeam: async (parent, args, { models }) => {
+    createTeam: requireAuth.createResolver(async (parent, args, { models, user }) => {
       try {
-        await models.Team.create({ ...args, owner: 1 });
-        return true;
+        await models.Team.create({ ...args, owner: user.id });
+
+        return {
+          sucess: true,
+        };
       } catch (err) {
-        console.log(err);
-        return false;
+        return {
+          sucess: false,
+          errors: formatError(err, models),
+        };
       }
-    },
+    }),
   },
 };

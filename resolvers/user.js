@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 
 import formatError from '../utils/formatErrors';
+import { validateLogin } from '../configs/authentication';
 
 export default {
   Query: {
@@ -9,12 +10,14 @@ export default {
   },
 
   Mutation: {
+    login: (parent, { email, password }, { models, SECRET, SECRET2 }) =>
+      validateLogin(email, password, models, SECRET, SECRET2),
     register: async (parent, { password, password2, ...otherArgs }, { models }) => {
       // Check passwordslength
       if (password.length <= 5) {
         return {
           sucess: false,
-          errors: [{ path: 'password', message: 'Password needs to be at least 5 characters' }],
+          errors: [{ path: 'password', message: 'Password needs to be at least 6 characters' }],
         };
       }
       // Check password confirmation
