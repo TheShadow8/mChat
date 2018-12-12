@@ -2,14 +2,21 @@ import { gql } from 'apollo-server-express';
 
 export default gql`
   type Team {
+    id: Int!
+    name: String!
     owner: User!
-    members: [User!]!
+    members: [User!]
     channels: [Channel!]!
   }
 
   type createTeamResponse {
     sucess: Boolean!
+    team: Team!
     errors: [Error!]
+  }
+
+  type Query {
+    allTeams: [Team!]!
   }
 
   type Mutation {
