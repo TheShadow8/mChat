@@ -46,6 +46,7 @@ export const refreshTokens = async (token, refreshToken, models, SECRET, SECRET2
   if (!user) {
     return {};
   }
+
   const refreshSecret = user.password + SECRET2;
 
   try {
@@ -54,7 +55,7 @@ export const refreshTokens = async (token, refreshToken, models, SECRET, SECRET2
     return {};
   }
 
-  const [newToken, newRefreshToken] = await createTokens(user, SECRET, user.refreshSecret);
+  const [newToken, newRefreshToken] = await createTokens(user, SECRET, refreshSecret);
   return {
     token: newToken,
     refreshToken: newRefreshToken,

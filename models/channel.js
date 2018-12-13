@@ -1,6 +1,14 @@
 export default (sequelize, DataTypes) => {
   const Channel = sequelize.define('channel', {
-    name: DataTypes.STRING,
+    name: {
+      type: DataTypes.STRING,
+      validate: {
+        len: {
+          args: 1,
+          msg: 'Channel name needs to be at least 1 character',
+        },
+      },
+    },
     public: {
       type: DataTypes.BOOLEAN,
       default: true,

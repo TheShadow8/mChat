@@ -9,7 +9,13 @@ export default gql`
     users: [User!]!
   }
 
+  type createChannelResponse {
+    sucess: Boolean!
+    channel: Channel
+    errors: [Error!]
+  }
+
   type Mutation {
-    createChannel(teamId: Int!, name: String!, public: Boolean = flase): Boolean!
+    createChannel(teamId: Int!, name: String!, public: Boolean = flase): createChannelResponse
   }
 `;
