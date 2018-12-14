@@ -1,11 +1,14 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import path from 'path';
 import jwt from 'jsonwebtoken';
 import { ApolloServer } from 'apollo-server-express';
-
-import path from 'path';
 import { fileLoader, mergeTypes, mergeResolvers } from 'merge-graphql-schemas';
+import { makeExecutableSchema } from 'graphql-tools';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
+import { execute, subscribe } from 'graphql';
+
 import models from './models';
 import keys from './configs/keys';
 import { refreshTokens } from './configs/authentication';
@@ -51,9 +54,13 @@ app.use(validateUser);
 const typeDefs = mergeTypes(fileLoader(path.join(__dirname, './schemas')));
 const resolvers = mergeResolvers(fileLoader(path.join(__dirname, './resolvers')));
 
-const server = new ApolloServer({
+const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
+});
+
+const server = new ApolloServer({
+  schema,
   context: ({ req, res }) => ({
     models,
     user: req.user,
@@ -68,8 +75,20 @@ server.applyMiddleware({ app });
 const port = process.env.PORT || 8088;
 
 models.sequelize.sync({}).then(() => {
-  app.listen(port, () =>
+  app.listen(port, () => {
     // eslint-disable-next-line no-console
-    console.log(`🚀 Server ready at http://localhost:${port}${server.graphqlPath}`)
-  );
+    console.log(`🚀 Server ready at http://localhost:${port}${server.graphqlPath}`);
+    // eslint-disable-next-line no-new
+    new SubscriptionServer(
+      {
+        execute,
+        subscribe,
+        schema,
+      },
+      {
+        server: app,
+        path: '/subscriptions',
+      }
+    );
+  });
 });
