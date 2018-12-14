@@ -10,17 +10,10 @@ export default {
     }),
 
     inviteTeams: requireAuth.createResolver(async (parent, args, { models, user }) =>
-      models.Team.findAll(
-        {
-          include: [
-            {
-              model: models.User,
-              where: { id: user.id },
-            }
-          ],
-        },
-        { raw: true }
-      )
+      models.sequelize.query('select * from teams join members on id = team_id where user_id = ?', {
+        replacements: [user.id],
+        model: models.Team,
+      })
     ),
   },
 
@@ -55,7 +48,9 @@ export default {
           if (team.owner !== user.id) {
             return {
               sucess: false,
-              errors: [{ path: 'email', message: 'You cannot add members to the team' }],
+              errors: [
+                { path: 'email', message: 'You have to be the owner of the team to invite members' }
+              ],
             };
           }
 

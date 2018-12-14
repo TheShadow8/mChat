@@ -69,6 +69,7 @@ const port = process.env.PORT || 8088;
 
 models.sequelize.sync({}).then(() => {
   app.listen(port, () =>
+    // eslint-disable-next-line no-console
     console.log(`🚀 Server ready at http://localhost:${port}${server.graphqlPath}`)
   );
 });
