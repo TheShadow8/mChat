@@ -8,6 +8,7 @@ import { fileLoader, mergeTypes, mergeResolvers } from 'merge-graphql-schemas';
 import { makeExecutableSchema } from 'graphql-tools';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 import { execute, subscribe } from 'graphql';
+import { createServer } from 'http';
 
 import models from './models';
 import keys from './configs/keys';
@@ -59,7 +60,7 @@ const schema = makeExecutableSchema({
   resolvers,
 });
 
-const server = new ApolloServer({
+const apolloServer = new ApolloServer({
   schema,
   context: ({ req, res }) => ({
     models,
@@ -69,15 +70,16 @@ const server = new ApolloServer({
   }),
 });
 
-server.applyMiddleware({ app });
+apolloServer.applyMiddleware({ app });
 
 // Server listen
 const port = process.env.PORT || 8088;
+const server = createServer(app);
 
 models.sequelize.sync({}).then(() => {
-  app.listen(port, () => {
+  server.listen(port, () => {
     // eslint-disable-next-line no-console
-    console.log(`🚀 Server ready at http://localhost:${port}${server.graphqlPath}`);
+    console.log(`🚀 Server ready at http://localhost:${port}${apolloServer.graphqlPath}`);
     // eslint-disable-next-line no-new
     new SubscriptionServer(
       {
@@ -86,7 +88,7 @@ models.sequelize.sync({}).then(() => {
         schema,
       },
       {
-        server: app,
+        server,
         path: '/subscriptions',
       }
     );

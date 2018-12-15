@@ -4,6 +4,7 @@ import keys from '../configs/keys';
 const sequelize = new Sequelize('mchat', 'postgres', keys.postgresPass, {
   dialect: 'postgres',
   operatorsAliases: Sequelize.Op,
+  logging: false,
   define: {
     underscored: true,
   },
