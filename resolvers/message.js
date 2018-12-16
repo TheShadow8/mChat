@@ -26,11 +26,23 @@ export default {
   },
 
   Query: {
-    messages: requireAuth.createResolver(async (parent, { channelId }, { models, user }) =>
-      models.Message.findAll(
-        { order: [['created_at', 'ASC']], where: { channelId } },
-        { raw: true }
-      )
+    messages: requireAuth.createResolver(
+      async (parent, { cursor, channelId }, { models, user }) => {
+        const options = {
+          order: [['created_at', 'DESC']],
+          where: { channelId },
+          limit: 15,
+        };
+
+        const convertCursor = new Date(parseInt(cursor, 10));
+        if (cursor) {
+          options.where.created_at = {
+            [models.op.lt]: convertCursor,
+          };
+        }
+
+        return models.Message.findAll(options, { raw: true });
+      }
     ),
   },
 
