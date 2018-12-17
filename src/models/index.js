@@ -10,6 +10,7 @@ export default async () => {
   const sequelize = new Sequelize('mchat', 'postgres', keys.postgresPass, {
     dialect: 'postgres',
     operatorsAliases: Sequelize.Op,
+    host: process.env.DB_HOST || 'localhost',
     logging: false,
     define: {
       underscored: true,

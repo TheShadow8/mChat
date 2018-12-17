@@ -1,5 +1,5 @@
 node_modules
-configs/keys_dev.js
+src/configs/keys_dev.js
 dist
 files
 pgdata

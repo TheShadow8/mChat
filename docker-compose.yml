@@ -7,9 +7,10 @@ services:
   db:
     image: postgres
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - webnet
+    restart: always
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
@@ -41,4 +42,8 @@ services:
     depends_on:
       - web
     command: /bin/bash -c "cat /etc/nginx/conf.d/mysite.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
-networks: webnet:
+networks:
+  webnet:
+volumes:
+  postgres_data:
+    external: true
