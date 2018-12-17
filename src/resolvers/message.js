@@ -1,7 +1,14 @@
-import { PubSub, withFilter } from 'graphql-subscriptions';
+import { withFilter } from 'graphql-subscriptions';
+import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { requireAuth } from '../configs/authentication';
 
-const pubsub = new PubSub();
+const pubsub = new RedisPubSub({
+  connection: {
+    host: '127.0.0.1',
+    port: 6379,
+    retry_strategy: options => Math.max(options.attempt * 100, 3000),
+  },
+});
 
 const NEW_CHANNEL_MESSAGE = 'NEW_CHANNEL_MESSAGE';
 
